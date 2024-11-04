@@ -100,33 +100,35 @@
 
         // Fetch existing bin data and add the new entry
         async function saveDataToJsonBin(name, number) {
-            try {
-                // Fetch current data in the bin
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    method: 'GET',
-                    headers: { 'X-Master-Key': API_KEY }
-                });
-                const data = await response.json();
-                const updatedData = data.record || [];
+    try {
+        // Fetch current data in the bin
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            method: 'GET',
+            headers: { 'X-Master-Key': API_KEY }
+        });
+        const data = await response.json();
 
-                // Add new entry
-                updatedData.push({ name, number });
+        // Check if the fetched data is an array or not
+        const updatedData = Array.isArray(data.record) ? data.record : [];
 
-                // Update JSONBin with new data
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
-                    },
-                    body: JSON.stringify(updatedData)
-                });
-                odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
-            } catch (error) {
-                console.error('Error:', error);
-                odpoved.innerHTML = "Nepodařilo se uložit data. Zkuste to znovu.";
-            }
-        }
+        // Add new entry
+        updatedData.push({ name, number });
+
+        // Update JSONBin with new data
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': API_KEY
+            },
+            body: JSON.stringify(updatedData)
+        });
+        odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
+    } catch (error) {
+        console.error('Error:', error);
+        odpoved.innerHTML = "Nepodařilo se uložit data. Zkuste to znovu.";
+    }
+}
 
         // Handle button click to show or hide rules
         rulesButton.addEventListener('click', () => {

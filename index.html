@@ -122,60 +122,62 @@
 
         // Handle "Save Data" button click to JSONBin.io
         saveDataButton.addEventListener("click", () => {
-            const name = nameInput.value.trim();
-            const number = lastResult;
+    const name = nameInput.value.trim();
+    const number = lastResult;
 
-            if (name && number) {
-                // Replace '<YOUR_BIN_ID>' with your actual bin ID
-                const binId = '6728fffaacd3cb34a8a28856'; // Your existing bin ID here
-                const apiKey = '$2a$10$0tpYvgeECNcd6KlRcrXDqefVvMD7NTPCPGj7YNsTASodtEODgv/Oi'; // Your JSONBin API key
+    if (name && number) {
+        const binId = '6728fffaacd3cb34a8a28856'; // Your existing bin ID here
+        const apiKey = '$2a$10$0tpYvgeECNcd6KlRcrXDqefVvMD7NTPCPGj7YNsTASodtEODgv/Oi'; // Your JSONBin API key
 
-                // Fetch current data from the existing bin
-                fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                    headers: {
-                        'X-Master-Key': apiKey,
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(existingData => {
-                    // Append new data
-                    existingData.push({ name, number });
-
-                    // Update the bin with the new data
-                    return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'X-Master-Key': apiKey,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(existingData),
-                    });
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(data => {
-                            throw new Error(data.message);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
-                    nameInput.value = ""; // Clear the input field after saving
-                    nameInput.style.display = "none";
-                    odpoved.style.display = "block";
-                    saveDataButton.style.display = "none";
-                    scanAgainButton.style.display = "block";
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    odpoved.innerHTML = error.message;
-                });
-            } else {
-                odpoved.innerHTML = "ZADEJTE JMÉNO";
+        // Fetch current data from the existing bin
+        fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+            headers: {
+                'X-Master-Key': apiKey,
+                'Content-Type': 'application/json',
             }
+        })
+        .then(response => response.json())
+        .then(existingData => {
+            // Ensure existingData is an array or handle the default case
+            let dataArray = Array.isArray(existingData.record) ? existingData.record : [];
+            
+            // Append new data
+            dataArray.push({ name, number });
+
+            // Update the bin with the new data
+            return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'X-Master-Key': apiKey,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ record: dataArray }), // Wrap it in an object with a 'record' property
+            });
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
+            nameInput.value = ""; // Clear the input field after saving
+            nameInput.style.display = "none";
+            odpoved.style.display = "block";
+            saveDataButton.style.display = "none";
+            scanAgainButton.style.display = "block";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            odpoved.innerHTML = error.message;
         });
+    } else {
+        odpoved.innerHTML = "ZADEJTE JMÉNO";
+    }
+});
     </script>
 </body>
 </html>

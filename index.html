@@ -121,7 +121,9 @@
         });
 
         // Handle "Save Data" button click to JSONBin.io
-        saveDataButton.addEventListener("click", () => {
+saveDataButton = document.getElementById('save-data-button');
+
+saveDataButton.addEventListener("click", () => {
     const name = nameInput.value.trim();
     const number = lastResult;
 
@@ -129,69 +131,64 @@
         const binId = '6728fffaacd3cb34a8a28856'; // Your existing bin ID here
         const apiKey = '$2a$10$0tpYvgeECNcd6KlRcrXDqefVvMD7NTPCPGj7YNsTASodtEODgv/Oi'; // Your JSONBin API key
 
-        // Fetch current data from the existing bin
-        fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-            headers: {
-                'X-Master-Key': apiKey,
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Could not fetch data');
-            }
-            return response.json();
-        })
-        .then(existingData => {
-            // Check if existingData is defined and is an object
-            if (!existingData || typeof existingData !== 'object') {
-                throw new Error('Invalid data format');
-            }
+        // Step 1: Fetch current data
+        let req = new XMLHttpRequest();
+        req.onreadystatechange = () => {
+            if (req.readyState == XMLHttpRequest.DONE) {
+                if (req.status === 200) {
+                    const existingData = JSON.parse(req.responseText).record;
 
-            // Ensure existing data is an array
-            let dataArray = Array.isArray(existingData.record) ? existingData.record : [];
+                    // Ensure existingData is an array
+                    let dataArray = Array.isArray(existingData) ? existingData : [];
 
-            // Check for duplicates
-            const isDuplicate = dataArray.some(entry => entry.number === number);
-            if (isDuplicate) {
-                throw new Error('ČÍSLO JE JIŽ ZAREGISTROVANÉ'); // "NUMBER IS ALREADY REGISTERED"
+                    // Check for duplicates
+                    const isDuplicate = dataArray.some(entry => entry.number === number);
+                    if (isDuplicate) {
+                        odpoved.innerHTML = 'ČÍSLO JE JIŽ ZAREGISTROVANÉ'; // "NUMBER IS ALREADY REGISTERED"
+                        return;
+                    }
+
+                    // Step 2: Append new data
+                    dataArray.push({ name, number });
+
+                    // Step 3: Send updated data
+                    const updatedData = {
+                        record: dataArray,
+                        metadata: {
+                            private: true // Keep the bin private
+                        }
+                    };
+
+                    let updateReq = new XMLHttpRequest();
+                    updateReq.onreadystatechange = () => {
+                        if (updateReq.readyState == XMLHttpRequest.DONE) {
+                            if (updateReq.status === 200) {
+                                odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
+                                nameInput.value = ""; // Clear the input field after saving
+                                nameInput.style.display = "none";
+                                saveDataButton.style.display = "none";
+                                scanAgainButton.style.display = "block";
+                            } else {
+                                odpoved.innerHTML = 'Chyba při ukládání dat'; // "Error saving data"
+                            }
+                        }
+                    };
+
+                    updateReq.open("PUT", `https://api.jsonbin.io/v3/b/${binId}`, true);
+                    updateReq.setRequestHeader("Content-Type", "application/json");
+                    updateReq.setRequestHeader("X-Master-Key", apiKey);
+                    updateReq.send(JSON.stringify(updatedData)); // Send the updated data
+                } else {
+                    odpoved.innerHTML = 'Chyba při načítání dat'; // "Error loading data"
+                }
             }
+        };
 
-            // Append new data
-            dataArray.push({ name, number });
-
-            // Update the bin with the new data
-            return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                method: 'PUT',
-                headers: {
-                    'X-Master-Key': apiKey,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ record: dataArray }), // Wrap it in an object with a 'record' property
-            });
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(data => {
-                    throw new Error(data.message);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
-            nameInput.value = ""; // Clear the input field after saving
-            nameInput.style.display = "none";
-            odpoved.style.display = "block";
-            saveDataButton.style.display = "none";
-            scanAgainButton.style.display = "block";
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            odpoved.innerHTML = error.message;
-        });
+        req.open("GET", `https://api.jsonbin.io/v3/b/${binId}`, true);
+        req.setRequestHeader("X-Master-Key", apiKey);
+        req.send();
     } else {
-        odpoved.innerHTML = "ZADEJTE JMÉNO";
+        odpoved.innerHTML = "ZADEJTE JMÉNO"; // "PLEASE ENTER A NAME"
     }
 });
 

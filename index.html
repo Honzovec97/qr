@@ -140,7 +140,13 @@
         .then(existingData => {
             // Ensure existingData is an array or handle the default case
             let dataArray = Array.isArray(existingData.record) ? existingData.record : [];
-            
+
+            // Check for duplicates
+            const isDuplicate = dataArray.some(entry => entry.number === number);
+            if (isDuplicate) {
+                throw new Error('ČÍSLO JE JIŽ ZAREGISTROVANÉ'); // "NUMBER IS ALREADY REGISTERED"
+            }
+
             // Append new data
             dataArray.push({ name, number });
 
@@ -178,6 +184,7 @@
         odpoved.innerHTML = "ZADEJTE JMÉNO";
     }
 });
+
     </script>
 </body>
 </html>

@@ -35,6 +35,43 @@
     </div>
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner with Name</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="scanner-container">
+        <div class="nadpis-container">
+            <img src="logo-ples.svg" alt="Logo">
+            <h2 class="nadpis">ZAREGISTRUJ SVOJÍ KARTU!</h2>
+            <img src="logo-ples.svg" alt="Logo">
+        </div>
+        <div id="my-qr-reader">
+            <div id="my-qr-reader-overlay"></div>
+        </div>
+        <div id="your-qr-result"></div>
+        <input id="input-name" type="text" style="display: none;" placeholder="ZADEJ SVOJE JMÉNO" />
+        <div id="odpoved" style="display: none;"></div>
+        <button id="save-data-button" style="display: none;">REGISTROVAT</button>
+        <button id="scan-again-button" style="display: none;">SKENUJ ZNOVU</button>
+        <button id="rules-button">PRAVIDLA SOUTĚŽE</button>
+        <div id="rules-content" style="display: none;">
+            <ul>
+                <li>Pravidlo 1: Popis prvního pravidla.</li>
+                <li>Pravidlo 2: Popis druhého pravidla.</li>
+                <li>Pravidlo 3: Popis třetího pravidla.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
         const myqr = document.getElementById('your-qr-result');
         const nameInput = document.getElementById('input-name');
@@ -120,16 +157,17 @@
             startScanner(); // Reinitialize scanner
         });
 
-        // Handle "Save Data" button click
+        // Handle "Save Data" button click to JSONBin.io
         saveDataButton.addEventListener("click", () => {
             const name = nameInput.value.trim();
             const number = lastResult;
 
             if (name && number) {
-                fetch('http://localhost:3000/save-data', {
+                fetch('https://api.jsonbin.io/v3/b', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-Master-Key': '<YOUR_API_KEY>'  // Replace <YOUR_API_KEY> with your actual API key
                     },
                     body: JSON.stringify({ name, number }),
                 })
@@ -142,23 +180,24 @@
                     return response.json();
                 })
                 .then(data => {
-                    document.getElementById('odpoved').innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
-                    if (data.message === `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`) {
-                        nameInput.value = ""; // Clear the input field after saving
-                        nameInput.style.display = "none";
-                        odpoved.style.display = "block";
-                        saveDataButton.style.display = "none";
-                        scanAgainButton.style.display = "block";
-                    }
+                    odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
+                    nameInput.value = ""; // Clear the input field after saving
+                    nameInput.style.display = "none";
+                    odpoved.style.display = "block";
+                    saveDataButton.style.display = "none";
+                    scanAgainButton.style.display = "block";
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('odpoved').innerHTML = error.message;
+                    odpoved.innerHTML = error.message;
                 });
             } else {
-                document.getElementById('odpoved').innerHTML = "ZADEJTE JMÉNO";
+                odpoved.innerHTML = "ZADEJTE JMÉNO";
             }
         });
     </script>
+</body>
+</html>
+
 </body>
 </html>

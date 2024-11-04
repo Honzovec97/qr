@@ -1,0 +1,186 @@
+body {
+    font-family: Bebas Neue, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('background.png');
+    background-blend-mode: multiply;
+}
+
+@font-face {
+    font-family: Dince;
+    src: url(Dince\ regular.ttf);
+}
+
+.bebas-neue-regular {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.nadpis-container {
+    display: flex;
+}
+
+img {
+    max-width: 50px;
+    padding: 25px;
+}
+
+.nadpis {
+    color: #ffff00;
+    font-size: 48px;
+    text-align: center;
+}
+
+#odpoved, #your-qr-result {
+    color: #ffff00;
+    font-size: 28px;
+    text-align: center;
+}
+
+#rules-content {
+    overflow: hidden;
+    width: 85%;
+    max-height: 0;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+    padding: 0 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    text-align: left;
+    color: #ffff00;
+    font-size: 24px;
+}
+
+#rules-content.expanded {
+    max-height: 500px;
+    padding: 10px;
+}
+
+#scanner-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-image: url('background.png');
+    background-blend-mode: multiply;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type="text"] {
+    width: 80%;
+    margin: 10px 0 20px 0;
+    border: none;
+    border-bottom: 4px solid yellow;
+    border-radius: 4px;
+    font-family: 'Bebas Neue';
+    font-size: 24px;
+    text-align: center;
+    color: yellow;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+button {
+    width: 80%;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #ffff00;
+    color: #000;
+    font-size: 24px;
+    font-family: Bebas Neue, sans-serif;
+    text-align: center;
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255, 0);
+    color: #ffff00;
+    border: 2px solid #ffff00;
+}
+
+#my-qr-reader {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 1; 
+    margin: auto;
+    border: 4px solid #ffff00;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#my-qr-reader video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#my-qr-reader-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px dashed rgba(255, 255, 0, 0.8);
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+/* Responsive adjustments for iPhone 12 and similar devices */
+@media (max-width: 430px) {
+    .nadpis {
+        font-size: 30px; /* Smaller heading */
+    }
+
+    #odpoved, #your-qr-result {
+        font-size: 20px;
+        padding-bottom: 15px;
+    }
+
+    #rules-content {
+        font-size: 18px;
+    }
+
+    input[type="text"], button {
+        width: 90%;
+        font-size: 18px;
+        padding: 8px;
+    }
+
+    #my-qr-reader {
+        max-width: 220px; /* Smaller QR reader for compact view */
+    }
+}
+
+/* Responsive adjustments for iPad and similar devices */
+@media (min-width: 431px) and (max-width: 768px) {
+    .nadpis {
+        font-size: 42px;
+    }
+
+    #odpoved, #your-qr-result {
+        font-size: 26px;
+        padding-bottom: 30px;
+    }
+
+    #rules-content {
+        font-size: 22px;
+    }
+
+    input[type="text"], button {
+        width: 85%;
+        font-size: 24px;
+    }
+
+    #my-qr-reader {
+        max-width: 275px;
+    }
+}

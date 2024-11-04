@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Spin Machine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Bebas Neue', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('background.png');
+            background-blend-mode: multiply;
+        }
+
+        /* Spinner styling */
+        #spinner {
+            font-size: 8rem;
+            color: #ffff00;
+            margin: 70px;
+            width: 150px;
+            height: 60px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        /* Name and Number display styling */
+        #name, #number {
+            color: #ffff00;
+            font-size: 6rem;
+            margin: 10px;
+            display: none; /* Initially hidden */
+            text-align: center;
+        }
+
+        /* Button styling */
+        button {
+            width: 15%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffff00; /* Yellow background */
+            color: #000;
+            font-size: 42px;
+            font-family: 'Bebas Neue', sans-serif;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0);
+            color: #ffff00;
+            border: 2px solid #ffff00;
+        }
+
+        /* Winning numbers display styling */
+        #winningNumbers {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ffff00; /* Yellow text color */
+            margin-top: 20px;
+            display: flex;
+            justify-content: center; /* Centering the content */
+        }
+
+        /* Spinning animation */
+        .spin {
+            animation: spin 0.1s infinite;
+        }
+
+        /* Keyframes for the spinning animation */
+        @keyframes spin {
+            0% { transform: rotateX(0); }
+            100% { transform: rotateX(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #spinner {
+                font-size: 2rem; /* Smaller spinner */
+                width: 120px;
+                height: 50px;
+            }
+
+            button {
+                width: 90%;
+                font-size: 18px;
+            }
+
+            #name, #number, #winningNumbers {
+                font-size: 1.5rem; /* Smaller text for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="spinner">-</div>
+    <div id="name"></div>
+    <div id="number"></div>
+    <button onclick="drawLottery()">LOSUJ</button>
+    <div id="winningNumbers"></div> <!-- New div for winning numbers -->
+
+    <script>
+        let numbers = []; // Array to hold numbers from JSON
+        let entries = []; // Array to hold full entries from JSON
+        let lastNumber = null; // Variable to store the last number shown on the spinner
+
+        async function fetchData() {
+            const response = await fetch('data.json');
+            const data = await response.json();
+            entries = data; // Store full entries
+            numbers = data.map(entry => entry.number); // Extract numbers into the array
+        }
+
+        function spinAnimation(spinnerElement) {
+            spinnerElement.classList.add('spin');
+
+            // Generate a fake spinning effect using existing numbers
+            const spinInterval = setInterval(() => {
+                let randomIndex;
+                let newNumber;
+
+                do {
+                    randomIndex = Math.floor(Math.random() * numbers.length);
+                    newNumber = numbers[randomIndex]; // Get a random number
+                } while (newNumber === lastNumber); // Repeat until a different number is found
+
+                lastNumber = newNumber; // Update lastNumber to the new unique number
+                spinnerElement.innerText = lastNumber; // Display the new random number
+            }, 100);
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    clearInterval(spinInterval);
+                    spinnerElement.classList.remove('spin');
+                    resolve();
+                }, 5000); // Spin for 5 seconds
+            });
+        }
+
+        async function drawLottery() {
+            const spinnerElement = document.getElementById('spinner');
+            const nameElement = document.getElementById('name');
+            const numberElement = document.getElementById('number');
+            const winningNumbersElement = document.getElementById('winningNumbers'); // Get the winning numbers element
+
+            // Reset the display for the new draw
+            nameElement.style.display = 'none';
+            numberElement.style.display = 'none';
+            spinnerElement.style.display = 'flex'; // Show spinner
+
+            // Ensure data is fetched before spinning
+            if (numbers.length === 0) {
+                await fetchData();
+            }
+
+            await spinAnimation(spinnerElement);
+
+            // Wait for a short period before displaying the name and number
+            setTimeout(() => {
+                // Find the entry corresponding to the last number shown on the spinner
+                const selectedEntry = entries.find(entry => entry.number == lastNumber);
+
+                // Hide spinner and display name and number
+                spinnerElement.style.display = 'none'; // Hide spinner
+                nameElement.innerText = `Jméno: ${selectedEntry.name}`;
+                numberElement.innerText = `Číslo: ${selectedEntry.number}`;
+                nameElement.style.display = 'block'; // Show name
+                numberElement.style.display = 'block'; // Show number
+
+                // Update winning numbers display
+                updateWinningNumbers(selectedEntry.number);
+            }, 2000); // Wait for 2 seconds before showing the name and number
+        }
+
+        function updateWinningNumbers(winningNumber) {
+            const winningNumbersElement = document.getElementById('winningNumbers');
+
+            // Get current winning numbers from the display
+            const currentWinningNumbers = winningNumbersElement.innerText.split(' ').filter(Boolean);
+
+            // Add the new winning number to the list
+            currentWinningNumbers.push(winningNumber);
+
+            // Limit to the last 3 winning numbers
+            if (currentWinningNumbers.length > 3) {
+                currentWinningNumbers.shift(); // Remove the oldest number if there are more than 3
+            }
+
+            // Display the winning numbers in the desired format
+            winningNumbersElement.innerText = currentWinningNumbers.join(' '); // Join with a space
+        }
+
+        // Fetch data when the page loads
+        window.onload = fetchData;
+    </script>
+</body>
+</html>

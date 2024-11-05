@@ -16,6 +16,7 @@
 
     <script>
         // Initialize Supabase client globally
+        import { createClient } from 'https://unpkg.com/@supabase/supabase-js'
         const supabase = createClient('https://smgvcrivaccvdcurbhgi.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI')
 
         document.addEventListener("DOMContentLoaded", () => {

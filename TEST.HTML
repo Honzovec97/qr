@@ -16,9 +16,7 @@
 
     <script>
         // Initialize Supabase client globally
-        const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co"; // replace with your actual URL
-        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // replace with your actual anon key
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        const supabase = createClient('https://smgvcrivaccvdcurbhgi.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI')
 
         document.addEventListener("DOMContentLoaded", () => {
             const nameInput = document.getElementById('input-name');

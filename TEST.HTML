@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Supabase Test</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Supabase Test - Save Name</title>
 </head>
 <body>
-    <div id="app">
-        <h2>Enter Your Name</h2>
-        <input id="input-name" type="text" placeholder="Enter your name" />
-        <button id="save-data-button">Submit</button>
-        <div id="response" style="margin-top: 10px;"></div>
-    </div>
+    <h2>Save Your Name to Supabase</h2>
+    <input id="input-name" type="text" placeholder="Enter your name" />
+    <button id="save-data-button">Submit</button>
+    <div id="response" style="margin-top: 10px; color: green;"></div>
 
-    <!-- Include Supabase client library -->
+    <!-- Supabase client library -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Initialize Supabase client
-            const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co"; // Replace with your Supabase project URL
-            const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // Replace with your Supabase anon key
+            // Replace these with your actual Supabase credentials
+            const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co";
+            const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI";
             const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
             const nameInput = document.getElementById('input-name');
@@ -33,20 +30,24 @@
 
                 if (name) {
                     try {
-                        const { error } = await supabase
-                            .from("registrations") // Make sure this table exists in your Supabase project
+                        // Insert data into the 'registrations' table
+                        const { data, error } = await supabase
+                            .from("registrations")
                             .insert([{ name: name }]);
 
                         if (error) throw error;
 
                         responseDiv.innerHTML = `Success! Your name "${name}" has been saved.`;
-                        nameInput.value = ""; // Clear input after successful submission
+                        responseDiv.style.color = "green";
+                        nameInput.value = "";
                     } catch (error) {
                         responseDiv.innerHTML = `Error: ${error.message}`;
+                        responseDiv.style.color = "red";
                         console.error("Error saving data:", error.message);
                     }
                 } else {
                     responseDiv.innerHTML = "Please enter a name.";
+                    responseDiv.style.color = "red";
                 }
             });
         });

@@ -40,13 +40,13 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <script>
-            import { createClient } from '@supabase/supabase-js'
+        
 
             document.addEventListener("DOMContentLoaded", () => {
             // Initialize Supabase client
             const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co"; // Replace with your Supabase project URL
             const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // Replace with your Supabase anon key
-            const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+            const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
             const myqr = document.getElementById('your-qr-result');
             const nameInput = document.getElementById('input-name');

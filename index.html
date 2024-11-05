@@ -35,7 +35,13 @@
     </div>
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Supabase setup
+        const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co"; // replace with your Supabase project URL
+        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // replace with your Supabase anon public key
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
         const myqr = document.getElementById('your-qr-result');
         const nameInput = document.getElementById('input-name');
         const scannerContainer = document.getElementById('my-qr-reader');
@@ -113,61 +119,42 @@
             startScanner();
         });
 
-        saveDataButton.addEventListener("click", () => {
+        saveDataButton.addEventListener("click", async () => {
             const name = nameInput.value.trim();
             const number = lastResult;
 
             if (name && number) {
-                const binId = '6729ca76e41b4d34e44eab9f';
-                const apiKey = '$2a$10$0tpYvgeECNcd6KlRcrXDqefVvMD7NTPCPGj7YNsTASodtEODgv/Oi';
+                try {
+                    // Check if the number already exists in Supabase
+                    const { data: existingData, error: fetchError } = await supabase
+                        .from("registrations")
+                        .select("*")
+                        .eq("number", number);
 
-                let req = new XMLHttpRequest();
-                req.onreadystatechange = () => {
-                    if (req.readyState === XMLHttpRequest.DONE) {
-                        if (req.status === 200) {
-                            const existingData = JSON.parse(req.responseText).record;
-                            let dataArray = Array.isArray(existingData) ? existingData : [];
+                    if (fetchError) throw fetchError;
 
-                            const isDuplicate = dataArray.some(entry => entry.number === number);
-                            if (isDuplicate) {
-                                odpoved.innerHTML = 'ČÍSLO JE JIŽ ZAREGISTROVANÉ';
-                                return;
-                            }
-
-                            dataArray.push({ name, number });
-
-                            const updatedData = {
-                                record: dataArray
-                            };
-
-                            let updateReq = new XMLHttpRequest();
-                            updateReq.onreadystatechange = () => {
-                                if (updateReq.readyState === XMLHttpRequest.DONE) {
-                                    if (updateReq.status === 200) {
-                                        odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
-                                        nameInput.value = "";
-                                        nameInput.style.display = "none";
-                                        saveDataButton.style.display = "none";
-                                        scanAgainButton.style.display = "block";
-                                    } else {
-                                        odpoved.innerHTML = 'Chyba při ukládání dat';
-                                    }
-                                }
-                            };
-
-                            updateReq.open("PUT", `https://api.jsonbin.io/v3/b/${binId}`, true);
-                            updateReq.setRequestHeader("Content-Type", "application/json");
-                            updateReq.setRequestHeader("X-Master-Key", apiKey);
-                            updateReq.send(JSON.stringify(updatedData));
-                        } else {
-                            odpoved.innerHTML = 'Chyba při načítání dat';
-                        }
+                    // If number is already registered, show a message
+                    if (existingData.length > 0) {
+                        odpoved.innerHTML = "ČÍSLO JE JIŽ ZAREGISTROVANÉ";
+                        return;
                     }
-                };
 
-                req.open("GET", `https://api.jsonbin.io/v3/b/${binId}/latest`, true);
-                req.setRequestHeader("X-Master-Key", apiKey);
-                req.send();
+                    // Insert new registration
+                    const { error: insertError } = await supabase
+                        .from("registrations")
+                        .insert([{ name: name, number: number }]);
+
+                    if (insertError) throw insertError;
+
+                    odpoved.innerHTML = `ÚSPĚŠNĚ JSI SE ZAREGISTROVAL POD JMÉNEM ${name} A ČÍSLEM ${number}`;
+                    nameInput.value = "";
+                    nameInput.style.display = "none";
+                    saveDataButton.style.display = "none";
+                    scanAgainButton.style.display = "block";
+                } catch (error) {
+                    odpoved.innerHTML = "Chyba při ukládání dat";
+                    console.error("Error saving data:", error.message);
+                }
             } else {
                 odpoved.innerHTML = "ZADEJTE JMÉNO";
             }

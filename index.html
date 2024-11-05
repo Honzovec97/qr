@@ -34,12 +34,13 @@
         </div>
     </div>
 
+    <!-- Include Supabase client library and QR code scanner library -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase setup
+        // Initialize Supabase client
         const supabaseUrl = "https://smgvcrivaccvdcurbhgi.supabase.co"; // replace with your Supabase project URL
-        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // replace with your Supabase anon public key
+        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtZ3Zjcml2YWNjdmRjdXJiaGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3OTI4MzUsImV4cCI6MjA0NjM2ODgzNX0.mTqDKY5NCQRj95oIMkHjAWTiGsPsvdXDJuY5q2RmqyI"; // replace with your Supabase anon key
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         const myqr = document.getElementById('your-qr-result');
@@ -134,7 +135,7 @@
                     if (fetchError) throw fetchError;
 
                     // If number is already registered, show a message
-                    if (existingData.length > 0) {
+                    if (existingData && existingData.length > 0) {
                         odpoved.innerHTML = "ČÍSLO JE JIŽ ZAREGISTROVANÉ";
                         return;
                     }

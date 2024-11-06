@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    
+    <!-- Preconnect and font link for Bebas Neue -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Bebas Neue', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('background.png');
+            background-blend-mode: multiply;
+        }
+
+        .countdown {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFFF00;
+            text-align: center;
+        }
+
+        h1 {
+            color: #FFFF00;
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nadpis-container {
+            display: flex;
+        }
+
+        img {
+            max-width: 50px;
+            padding: 25px;
+        }
+
+        #countdown {
+            font-size: 60px;
+            color: #FFFF00;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Additional styling from your provided CSS */
+        @font-face {
+            font-family: Dince;
+            src: url(Dince\ regular.ttf);
+        }
+
+        .bebas-neue-regular {
+            font-family: 'Bebas Neue', sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @media (max-width: 430px) {
+            .countdown {
+                font-size: 40px; /* Smaller countdown on small screens */
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (min-width: 431px) and (max-width: 768px) {
+            .countdown {
+                font-size: 50px; /* Medium size countdown for tablet-like screens */
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="countdown" class="countdown"></div>
+
+    <script>
+        // Set the target date and time for the countdown
+        const targetDate = new Date('December 6, 2024 19:00:00 GMT+0100'); // CET (Central European Time)
+
+        // Function to update the countdown
+        function updateCountdown() {
+            const now = new Date();
+            const timeLeft = targetDate - now;
+
+            if (timeLeft <= 0) {
+                document.getElementById('countdown').innerHTML = "The event has started!";
+                clearInterval(countdownInterval);
+            } else {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                document.getElementById('countdown').innerHTML = `
+                    ${days}d ${hours}h ${minutes}m ${seconds}s
+                `;
+            }
+        }
+
+        // Update countdown every second
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
+
+</body>
+</html>

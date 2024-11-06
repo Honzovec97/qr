@@ -54,6 +54,22 @@
             max-width: 125px;
             padding: 25vh 25px 25px 25px;
         }
+        button {
+            width: 50vh;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffff00;
+            color: #000;
+            font-size: 24px;
+            font-family: Bebas Neue, sans-serif;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0);
+            color: #ffff00;
+            border: 2px solid #ffff00;
+        }
 
         /* Additional styling from your provided CSS */
         @font-face {
@@ -75,12 +91,12 @@
                 font-size: 6vh; /* Smaller countdown on small screens */
             }
             img{
-                padding: 2vh 25px 25px 25px;
+                padding: 4vh 25px 25px 25px;
             }
 
             h1 {
                 font-size: 8vh;
-                padding: 10vh 10px 10px 10px;
+                padding: 8vh 10px 10px 10px;
             }
         }
 
@@ -99,6 +115,7 @@
     <img src="logo8e.svg"> 
     <h1>Zpřístupnění trezoru za:</h1>
     <div id="countdown" class="countdown"></div>
+    <button>ZJISTI VÍC</button>
 
     <script>
         // Set the target date and time for the countdown

@@ -13,31 +13,25 @@
         body {
             font-family: 'Bebas Neue', sans-serif;
             margin: 0;
-            overflow: hidden;
             background-color: black;
             color: #FFFF00;
+            scroll-behavior: smooth; /* Enables smooth scrolling */
         }
 
-        /* Main container to hold sections for slide transition */
-        .container {
-            position: relative;
+        /* Full-height sections */
+        .section {
             width: 100%;
             height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Main content section */
-        .section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: transform 0.8s ease;
+            text-align: center;
+        }
+
+        /* Main content section */
+        #main-section {
+            background-color: black;
         }
 
         /* Countdown and title styling */
@@ -45,14 +39,12 @@
             font-size: 54px;
             color: #FFFF00;
             font-weight: bold;
-            text-align: center;
             letter-spacing: 2px;
         }
 
         h1 {
             font-size: 60px;
             margin-bottom: 20px;
-            text-align: center;
         }
 
         img {
@@ -79,21 +71,11 @@
         }
 
         /* Game rules section */
-        .rules-section {
-            position: absolute;
-            top: 100%; /* Start off-screen */
-            left: 0;
-            width: 100%;
-            height: 100%;
+        #rules-section {
             background-color: #333;
             color: #FFFF00;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             font-size: 24px;
             padding: 20px;
-            transition: transform 0.8s ease;
         }
 
         /* Responsive styling */
@@ -110,19 +92,17 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Main content section -->
-        <div id="main-section" class="section">
-            <img src="logo8e.svg">
-            <h1>Zpřístupnění trezoru za:</h1>
-            <div id="countdown" class="countdown"></div>
-            <button id="show-rules-btn">ZJISTI VÍC</button>
-        </div>
+    <!-- Main content section -->
+    <div id="main-section" class="section">
+        <img src="logo8e.svg">
+        <h1>Zpřístupnění trezoru za:</h1>
+        <div id="countdown" class="countdown"></div>
+        <button id="show-rules-btn">ZJISTI VÍC</button>
+    </div>
 
-        <!-- Game rules section -->
-        <div id="rules-section" class="rules-section">
-            <p>Pravidla hry:<br>1. Každý hráč musí...<br>2. Body se udělují za...</p>
-        </div>
+    <!-- Game rules section -->
+    <div id="rules-section" class="section">
+        <p>Pravidla hry:<br>1. Každý hráč musí...<br>2. Body se udělují za...</p>
     </div>
 
     <script>
@@ -148,10 +128,9 @@
         }
         const countdownInterval = setInterval(updateCountdown, 1000);
 
-        // Slide-up transition to reveal game rules
+        // Smooth scroll to rules section
         document.getElementById('show-rules-btn').addEventListener('click', function() {
-            document.getElementById('main-section').style.transform = 'translateY(-100%)';
-            document.getElementById('rules-section').style.transform = 'translateY(-100%)';
+            document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
         });
     </script>
 </body>

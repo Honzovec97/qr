@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Countdown Timer</title>
     
-    <!-- Font link for Bebas Neue -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -13,49 +12,57 @@
     <style>
         body {
             font-family: 'Bebas Neue', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            color: #FFFF00;
+        }
+
+        /* Main container to hold sections for slide transition */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Main content section */
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: auto;
-            margin: 0;
-            background-color: black;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
+            transition: transform 0.8s ease;
         }
 
+        /* Countdown and title styling */
         .countdown {
-            padding-top: 3vh;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             font-size: 54px;
             color: #FFFF00;
             font-weight: bold;
+            text-align: center;
             letter-spacing: 2px;
         }
 
         h1 {
-            padding-top: 5vh;
-            color: #FFFF00;
             font-size: 60px;
-            text-align: center;
             margin-bottom: 20px;
-        }
-
-        .nadpis-container {
-            display: flex;
+            text-align: center;
         }
 
         img {
             max-width: 125px;
-            padding: 25vh 25px 25px 25px;
+            padding: 5vh 0;
         }
+
         button {
             width: 30vh;
-            margin: 10px 0;
+            margin-top: 20px;
             padding: 10px;
             background-color: #ffff00;
             color: #000;
@@ -63,7 +70,6 @@
             cursor: pointer;
             border: none;
             font-family: 'Bebas Neue', sans-serif;
-            text-align: center;
         }
 
         button:hover {
@@ -72,73 +78,51 @@
             border: 2px solid #ffff00;
         }
 
-        /* Smooth scroll effect */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* New section for game rules */
-        #game-rules {
-            opacity: 0;
-            transform: translateY(100px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            padding: 50px;
-            color: #FFFF00;
-            font-size: 24px;
-            text-align: center;
-            background-color: #333;
+        /* Game rules section */
+        .rules-section {
+            position: absolute;
+            top: 100%; /* Start off-screen */
+            left: 0;
             width: 100%;
-            max-width: 800px;
-            margin-top: 50px;
+            height: 100%;
+            background-color: #333;
+            color: #FFFF00;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            font-size: 24px;
+            padding: 20px;
+            transition: transform 0.8s ease;
         }
 
-        /* Visible class for fade-in effect */
-        #game-rules.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Responsive styles */
+        /* Responsive styling */
         @media (max-width: 430px) {
             .countdown {
-                padding-top: 2vh;
-                padding-right: 3%;
-                padding-left: 3%;
                 font-size: 6vh;
-            }
-            img {
-                padding: 4vh 25px 25px 25px;
             }
 
             h1 {
                 font-size: 8vh;
-                padding: 8vh 10px 10px 10px;
             }
         }
 
-        @media (min-width: 431px) and (max-width: 768px) {
-            #countdown {
-                font-size: 50px;
-            }
-
-            h1 {
-                font-size: 32px;
-            }
-        }
     </style>
 </head>
 <body>
-    <img src="logo8e.svg">
-    <h1>Zpřístupnění trezoru za:</h1>
-    <div id="countdown" class="countdown"></div>
-    <button id="show-rules-btn">ZJISTI VÍC</button>
+    <div class="container">
+        <!-- Main content section -->
+        <div id="main-section" class="section">
+            <img src="logo8e.svg">
+            <h1>Zpřístupnění trezoru za:</h1>
+            <div id="countdown" class="countdown"></div>
+            <button id="show-rules-btn">ZJISTI VÍC</button>
+        </div>
 
-    <!-- New section for the game rules -->
-    <div id="game-rules">
-        <p>Pravidla hry:<br>1. Každý hráč musí...<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za....<br>2. Body se udělují za...</p>
+        <!-- Game rules section -->
+        <div id="rules-section" class="rules-section">
+            <p>Pravidla hry:<br>1. Každý hráč musí...<br>2. Body se udělují za...</p>
+        </div>
     </div>
 
     <script>
@@ -164,11 +148,10 @@
         }
         const countdownInterval = setInterval(updateCountdown, 1000);
 
-        // Smooth scroll and fade-in effect for game rules
+        // Slide-up transition to reveal game rules
         document.getElementById('show-rules-btn').addEventListener('click', function() {
-            const gameRules = document.getElementById('game-rules');
-            gameRules.classList.add('visible');  // Fade-in effect
-            gameRules.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('main-section').style.transform = 'translateY(-100%)';
+            document.getElementById('rules-section').style.transform = 'translateY(-100%)';
         });
     </script>
 </body>

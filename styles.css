@@ -64,8 +64,7 @@ img {
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
-    background-image: url('background.png');
-    background-blend-mode: multiply;
+    background-color: #000;
     text-align: center;
     display: flex;
     flex-direction: column;

@@ -75,7 +75,6 @@
             background-color: #333;
             color: #FFFF00;
             font-size: 24px;
-            padding: 20px;
         }
 
         /* Responsive styling */
@@ -133,21 +132,23 @@
             document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Detect scroll direction to smoothly transition between sections
-        let lastScrollY = window.scrollY;
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > lastScrollY) {
-                // Scrolling down, go to the next section (rules)
-                if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
-                    document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
-                }
+        // Scroll behavior on light scroll (wheel event)
+        let isScrolling = false;  // Prevent multiple triggers during a scroll
+        window.addEventListener('wheel', function(e) {
+            if (isScrolling) return;  // Prevent triggering multiple times while scrolling
+
+            isScrolling = true;
+            setTimeout(function() {
+                isScrolling = false;
+            }, 800);  // Reset after 800ms to allow light scroll to trigger again
+
+            if (e.deltaY > 0) {
+                // Scroll down (detecting downward scroll)
+                document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Scrolling up, go to the previous section (main content)
-                if (window.scrollY === 0) {
-                    document.getElementById('main-section').scrollIntoView({ behavior: 'smooth' });
-                }
+                // Scroll up (detecting upward scroll)
+                document.getElementById('main-section').scrollIntoView({ behavior: 'smooth' });
             }
-            lastScrollY = window.scrollY;
         });
     </script>
 </body>

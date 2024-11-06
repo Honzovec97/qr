@@ -146,7 +146,9 @@
 
         // Smooth scroll to rules section on button click
         document.getElementById('show-rules-btn').addEventListener('click', function() {
-            document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('rules-section').style.display = 'block'; // Show the rules section when clicked
+            document.getElementById('main-section').style.transform = 'translateY(-100%)'; // Slide main section up
+            document.getElementById('rules-section').style.transform = 'translateY(0)'; // Slide rules section up
         });
     </script>
 </body>

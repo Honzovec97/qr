@@ -27,7 +27,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            transition: transform 0.8s ease;
         }
 
         /* Main content section */
@@ -77,7 +76,6 @@
             color: #FFFF00;
             font-size: 24px;
             padding: 20px;
-            display: none; /* Initially hidden */
         }
 
         /* Responsive styling */
@@ -130,25 +128,9 @@
         }
         const countdownInterval = setInterval(updateCountdown, 1000);
 
-        // Detecting scroll and triggering slide effect
-        let isScrolled = false;
-
-        window.addEventListener('scroll', function() {
-            if (!isScrolled && window.scrollY > 50) { // Start the slide effect after 50px of scroll
-                isScrolled = true;
-                document.getElementById('main-section').style.transform = 'translateY(-100%)'; // Slide main section up
-                document.getElementById('rules-section').style.display = 'block'; // Make rules section visible
-                setTimeout(function() {
-                    document.getElementById('rules-section').style.transform = 'translateY(0)'; // Slide rules section up
-                }, 100); // Add slight delay for smooth transition
-            }
-        });
-
-        // Smooth scroll to rules section on button click
+        // Smooth scroll to rules section
         document.getElementById('show-rules-btn').addEventListener('click', function() {
-            document.getElementById('rules-section').style.display = 'block'; // Show the rules section when clicked
-            document.getElementById('main-section').style.transform = 'translateY(-100%)'; // Slide main section up
-            document.getElementById('rules-section').style.transform = 'translateY(0)'; // Slide rules section up
+            document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
         });
     </script>
 </body>

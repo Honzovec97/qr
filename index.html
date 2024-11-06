@@ -128,9 +128,26 @@
         }
         const countdownInterval = setInterval(updateCountdown, 1000);
 
-        // Smooth scroll to rules section
+        // Smooth scroll to rules section when the button is clicked
         document.getElementById('show-rules-btn').addEventListener('click', function() {
             document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Detect scroll direction to smoothly transition between sections
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > lastScrollY) {
+                // Scrolling down, go to the next section (rules)
+                if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
+                    document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                // Scrolling up, go to the previous section (main content)
+                if (window.scrollY === 0) {
+                    document.getElementById('main-section').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            lastScrollY = window.scrollY;
         });
     </script>
 </body>

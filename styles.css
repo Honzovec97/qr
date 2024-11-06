@@ -6,8 +6,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-image: url('background.png');
-    background-blend-mode: multiply;
+    background-color: #000;
 }
 
 @font-face {
